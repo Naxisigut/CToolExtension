@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { sendToBackground } from '@plasmohq/messaging';
+import { sendToBackground, sendToContentScript } from '@plasmohq/messaging';
 
 
 function IndexPopup() {
@@ -7,14 +7,13 @@ function IndexPopup() {
   const [message, setMessage] = useState("")
 
   const handleClick = async () => {
-    const resp = await sendToBackground({
-      name: "ping",
+    const resp = await sendToContentScript({
+      name: "start",
       body: {
-        id: 123
+        id: 111
       }
     })
-    setMessage(resp.message)
-
+    setMessage(resp)
     setIsSelecting(!isSelecting)
   }
 
