@@ -3,28 +3,24 @@ import { sendToBackground, sendToContentScript } from '@plasmohq/messaging';
 
 
 function IndexPopup() {
-  const [isSelecting, setIsSelecting] = useState(false)
-  const [message, setMessage] = useState("")
+  // const [isSelecting, setIsSelecting] = useState(false)
+  // const [message, setMessage] = useState("")
 
-  const handleClick = async () => {
+  const handleClick = async (command: string) => {
     const resp = await sendToContentScript({
-      name: "start",
-      body: {
-        id: 111
-      }
+      name: command,
+      body: ''
     })
-    setMessage(resp)
-    setIsSelecting(!isSelecting)
+    console.log('resp', resp);
   }
 
   return (
     <div style={{ padding: 16 }}>
       <a href="https://docs.plasmo.com" target="_blank">Plasmo</a>{" "}
       <div>
-        <button id="selector" onClick={ handleClick }>
-          { isSelecting ? 'stop' : 'select' }
-        </button>
-        <div>{ message }</div>
+        <button id="selector" onClick={ () => handleClick('start') }>start</button>
+        <button id="selector" onClick={ () => handleClick('stop') }>stop</button>
+        <button id="selector" onClick={ () => handleClick('isSelecting') }>isSelecting</button>
       </div>
     </div>
   )
