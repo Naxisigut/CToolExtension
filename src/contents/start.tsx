@@ -1,15 +1,18 @@
 import { PlasmoCSConfig } from 'plasmo';
 import { useMessage } from '@plasmohq/messaging/hook';
-import { isTop } from 'src/tools/index';
+import { isTop, copyText } from 'src/tools/index';
 export const config: PlasmoCSConfig = {
   matches: ["http://127.0.0.1:5502/*"],
   all_frames: true
 }
+const Notifications = chrome
 
 console.log('this is content');
 if(isTop()){
   console.log('isTop');
 }
+
+/* popup => content */
 const cmdHandler = {
   exec(msgName){
     let res = true
@@ -21,8 +24,11 @@ const cmdHandler = {
         selectHandler.stop()
         break;
       case 'isSelecting':
-        debugger
         res = selectHandler.isSelecting
+        break;
+      case 'testNotify':
+        testNotify()
+        break;
       default:
         break;
     }
@@ -49,24 +55,22 @@ const selectHandler = {
         { title: 'hash', message: frameLocation.hash },
       ]
       locationItems = locationItems.filter((i) => i.message)
-      sendMsg.toBackground('location', locationItems)
+      // sendMsg.toBackground('location', locationItems)
       selectHandler.stop()
     }
     return func
   },
   isSelecting: false,
   start(){
-    debugger
     this.isSelecting = true
-    // this.listen(window)
-    // const iframes = window.frames
-    // for (let index = 0; index < iframes.length; index++) {
-    //   const frameWindow = iframes[index];
-    //   this.listen(frameWindow)
-    // }
+    this.listen(window)
+    const iframes = window.frames
+    for (let index = 0; index < iframes.length; index++) {
+      const frameWindow = iframes[index];
+      this.listen(frameWindow)
+    }
   },
   stop(){
-    debugger
     this.isSelecting = false
     // this.onClickMap.forEach((value, key, map) => {
     //   try {
@@ -98,6 +102,94 @@ const selectHandler = {
 }
 
 
+function testNotify(){
+  // Notifications.create({
+  //   type: 'list',
+  //   iconUrl: '',
+  //   title: 'testTitle',
+  //   message: 'testMsg'
+  // },(id) => {
+  //   console.log('id', id);
+  // })
+}
+
+// Notifications.onButtonClicked.addListener((notificationId, btnIndex) => {
+//   // console.log('btn clicked', notificationId, btnIndex);
+//   if(notificationId === locationNotifyHandler.notificationId){
+//     locationNotifyHandler.onBtnClick(btnIndex)
+//   }
+// })
+
+const locationNotifyHandler = {
+  notificationId: 'locationNotifyId',
+  locationInfo: [], // 当前iframe信息
+  showBtns: true,
+  notifyOptions: {
+    iconUrl: '',
+    type: 'list',
+    title: '',
+    message: '',
+    // buttons: [{title: '复制hash'}, {title: '复制全部'}],
+    get buttons(){
+      return locationNotifyHandler.showBtns ? [{title: '复制hash'}, {title: '复制全部'}] : undefined
+    },
+    get items(){
+      return this.type === 'list' ? locationNotifyHandler.locationInfo : undefined
+    }
+  },
+  locationNotify(items){
+    // 发送chrome提示：location
+    this.notifyOptions.type = 'list'
+    this.notifyOptions.title = '获取路径'
+    this.notifyOptions.message = ''
+    this.showBtns = true
+    this.locationInfo = items
+    Notifications.create(this.notificationId, this.notifyOptions ,(id) => {
+      console.log(id);
+    })
+    return this.notificationId
+  },
+  copyOver(title = '', msg = ''){
+    this.notifyOptions.type = 'basic'
+    this.notifyOptions.title = title
+    this.notifyOptions.message = msg
+    this.showBtns = false
+    // 不用修改items，因为basic类型不会显示items
+    Notifications.create(this.notificationId, this.notifyOptions, (id) => {
+      console.log(id);
+    })
+  },
+  findItems(key){
+    if(key === 'hash')return this.locationInfo.find((i) => i.title === 'hash')
+    if(key === 'href')return this.locationInfo.find((i) => i.title === 'href')
+  },
+  onBtnClick(btnIndex){
+    switch (btnIndex) {
+      case 0: // 复制hash
+        const hashItems = this.findItems('hash')
+        console.log(hashItems);
+        if(hashItems){
+          copyText(hashItems.message)
+          this.copyOver('复制成功')
+        }else{
+          this.copyOver('复制失败', 'hash不存在')
+        }
+        break;
+        case 1: // 复制全部
+        const hrefItems = this.findItems('href')
+        if(hrefItems){
+          copyText(hrefItems.message)
+          this.copyOver('复制成功')
+        }else{
+          this.copyOver('复制失败', '路径不存在')
+        }
+        break;
+    
+      default:
+        break;
+    }
+  }
+}
 
 const listener = () => {
   // ret: {data: ${req.body}}

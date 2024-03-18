@@ -21,6 +21,7 @@ function IndexPopup() {
         <button id="selector" onClick={ () => handleClick('start') }>start</button>
         <button id="selector" onClick={ () => handleClick('stop') }>stop</button>
         <button id="selector" onClick={ () => handleClick('isSelecting') }>isSelecting</button>
+        <button id="selector" onClick={ () => handleClick('testNotify') }>testNotify</button>
       </div>
     </div>
   )
