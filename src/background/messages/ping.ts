@@ -12,12 +12,12 @@ const querySomeApi = (id: any)=>{
 /**
  * 接收消息的处理函数
  * @param req 接收到的消息，消息的结构应为一个包含name和body的对象
- * @param res 发送消息对象，调用其send方法可以返回响应
+ * @param resHandler 发送消息对象，调用其send方法可以返回响应
  */
-const handler: PlasmoMessaging.MessageHandler = async (req, res) => {
+const handler: PlasmoMessaging.MessageHandler = async (req, resHandler) => {
   const message = await querySomeApi(req.body.id)
   console.log('back' , message);
-  res.send({
+  resHandler.send({
     message
   })
 }
