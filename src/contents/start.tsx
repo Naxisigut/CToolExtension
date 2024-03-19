@@ -1,9 +1,9 @@
-import { PlasmoCSConfig } from 'plasmo';
+import type { PlasmoCSConfig } from 'plasmo';
 import { sendToBackground } from '@plasmohq/messaging';
 import { useMessage } from '@plasmohq/messaging/hook';
 import { isTop, copyText } from 'src/tools/index';
 export const config: PlasmoCSConfig = {
-  matches: ["http://127.0.0.1:5502/*"],
+  matches: ["http://127.0.0.1:5502/*", "http://127.0.0.1:5500/*"],
   all_frames: true
 }
 
@@ -135,7 +135,7 @@ const listener = () => {
     // req: 发来的消息本身，另外还有发送端信息
     const { name, body } = req
     const resp = cmdHandler.exec(name)
-    res.send(resp)
+    // res.send(resp)
   })
 
   return null
