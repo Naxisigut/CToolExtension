@@ -1,3 +1,4 @@
+import './style.css';
 import { useState, useEffect, lazy } from "react"
 import { collectFrames } from 'src/api/index';
 
@@ -17,7 +18,7 @@ function IndexPopup() {
   return (
     <div style={{ padding: 16 }}>
       <a href="https://docs.plasmo.com" target="_blank">Plasmo</a>{" "}
-        <LocationList data={listData}></LocationList>
+      <LocationList data={listData}></LocationList>
     </div>
   )
 }
