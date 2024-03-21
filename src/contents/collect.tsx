@@ -5,7 +5,7 @@ import type { PlasmoCSConfig } from 'plasmo';
 import { useMessage } from '@plasmohq/messaging/hook';
 
 export const config: PlasmoCSConfig = {
-  matches: ["http://127.0.0.1:5502/*", "http://127.0.0.1:5500/*"],
+  matches: ["http://127.0.0.1:5502/*", "http://127.0.0.1:5500/*", "*://*.51hgp.com/*"],
   all_frames: false
 }
 
@@ -16,22 +16,20 @@ export default function listener(){
     const { name } = req // req: 发来的消息本身，另外还有发送端信息
     if(name !== 'collectFrames')return
     const arr = collect(window)
+    console.log(arr);
     resHandler.send(arr)
   })
   return null
 }
 
-const collect = (window: Window, locationArr: Array<Location> = [])=>{
-  console.log('collect');
-  const location = window.location
-  locationArr.push(location)
+const collect = (window: Window)=>{
   const iframes = window.frames
-  if(window.frames.length){
-    for (let index = 0; index < iframes.length; index++) {
-      collect(iframes[index], locationArr)
-    }
-  }
+  if(!iframes.length)return []
 
-  return locationArr
+  const arr = Array.from(iframes).reduce((curr, frame) => {
+    if(frame.frameElement)curr.push(frame.location)
+    return curr
+  }, [])
+  return arr
 }
 
