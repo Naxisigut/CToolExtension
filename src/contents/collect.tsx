@@ -1,7 +1,9 @@
 /*****
- * collect all the frames info 
+ * content
+ * collect all the frames info of gongyunlian 
  *  */ 
 import type { PlasmoCSConfig } from 'plasmo';
+import type { CollectFrameType } from '~types';
 import { useMessage } from '@plasmohq/messaging/hook';
 
 export const config: PlasmoCSConfig = {
@@ -12,17 +14,32 @@ export const config: PlasmoCSConfig = {
 export default function listener(){
   // ret: {data: ${req.body}}
   // useMessage的泛型 前一个参数是接收到的req.body的类型，后一个参数是res.send返回的数据类型
-  const ret = useMessage<string | void, Array<Location>>((req, resHandler)=>{
+  const ret = useMessage<string | void, CollectFrameType[]>((req, resHandler)=>{
     const { name } = req // req: 发来的消息本身，另外还有发送端信息
     if(name !== 'collectFrames')return
-    const arr = collect(window)
-    console.log(arr);
-    resHandler.send(arr)
+    console.log('cmd', name);
+    const resp = collectFrames()
+    if(resp)resHandler.send(resp)
   })
   return null
 }
 
-const collect = (window: Window)=>{
+function collectFrames(){
+  const locations = collectLocation()
+  const tabNames = collectTabName()
+  if(locations.length === tabNames.length){
+    const resp = tabNames.map((i, idx) => {
+      return {
+        tabName: i,
+        location: locations[idx]
+      }
+    })
+    return resp
+  }
+}
+
+/* 收集iframes的location信息 */
+const collectLocation = ()=>{
   const iframes = window.frames
   if(!iframes.length)return []
 
@@ -30,6 +47,16 @@ const collect = (window: Window)=>{
     if(frame.frameElement)curr.push(frame.location)
     return curr
   }, [])
-  return arr
+  return arr as Location[]
+}
+
+/* 收集tab的名称 */
+const collectTabName = () => {
+  const tabs = document.querySelector('#main_tab_container').querySelectorAll('li>a')
+  if(!tabs.length)return []
+  const tabNames = Array.prototype.map.call(tabs, (tab) => {
+    return tab.childNodes[0].textContent || "TabNameDefault"
+  })
+  return tabNames as string[]
 }
 

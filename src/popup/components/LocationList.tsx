@@ -1,16 +1,17 @@
+import type { CollectFrameType } from '~types';
 import CtIcon from '~components/CtIcon';
 import { copyText } from '~tools';
 
-function LocationItem({ item }: { item: Location }){
-  function copy(text){
+function LocationItem({ item }: { item: CollectFrameType }){
+  function copy(text: string){
     copyText(text)
     // TODO 成功提示
   }
   return (
     <li className=" flex items-center">
-      <span className='flex-1 font-medium text-sm truncate'>{ item.href }</span>
+      <a href="javascript:;" title={item.location.href} className='flex-1 font-medium text-sm truncate'>{ item.tabName }</a>
       <div className=' ml-2'>
-        <a href="javacript:;" title='复制hash' onClick={() => copy(item.hash)}>
+        <a href="javacript:;" title='复制hash' onClick={() => copy(item.location.hash)}>
           <CtIcon icon='copy'></CtIcon>
         </a>
       </div>
@@ -18,7 +19,7 @@ function LocationItem({ item }: { item: Location }){
   )
 }
 
-function LocationList({ data }: { data: Location[]}){
+function LocationList({ data }: { data: CollectFrameType[]}){
   return (
     <ul className=" w-80">
       {

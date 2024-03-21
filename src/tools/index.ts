@@ -1,7 +1,7 @@
 export const isTop = () => window === top
 
 // 复制指定文本到剪切板
-export function copyText(str){
+export function copyText(str: string){
   const ipt = document.createElement('input')
   ipt.value = str
   document.body.appendChild(ipt)
