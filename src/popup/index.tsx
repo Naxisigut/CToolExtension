@@ -20,7 +20,7 @@ function IndexPopup() {
   }, [])
   return (
     <div style={{ padding: 16 }}>
-      <a href="https://docs.plasmo.com" target="_blank">Plasmo</a>{" "}
+      <span className=' text-lg font-sans font-semibold leading-10'>列表</span>
       <LocationList data={listData}></LocationList>
     </div>
   )
