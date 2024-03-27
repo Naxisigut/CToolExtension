@@ -26,16 +26,14 @@ export default function listener(){
 
 function collectFrames(){
   const locations = collectLocation()
-  const tabNames = collectTabName()
-  if(locations.length === tabNames.length){
-    const resp = tabNames.map((i, idx) => {
-      return {
-        tabName: i,
-        location: locations[idx]
-      }
-    })
-    return resp
-  }
+  const tabNames = collectTabNameHgp()
+  const resp = locations.map((i, idx) => {
+    return {
+      tabName: tabNames[idx] || i.href,
+      location: i,
+    }
+  })
+  return resp
 }
 
 /* 收集iframes的location信息 */
@@ -51,9 +49,13 @@ const collectLocation = ()=>{
 }
 
 /* 收集tab的名称 */
-const collectTabName = () => {
-  const tabs = document.querySelector('#main_tab_container').querySelectorAll('li>a')
+const collectTabNameHgp = () => {
+  const tabsWrapper = document.querySelector('#main_tab_container')
+  if(!tabsWrapper)return []
+
+  const tabs = tabsWrapper.querySelectorAll('li>a')
   if(!tabs.length)return []
+  
   const tabNames = Array.prototype.map.call(tabs, (tab) => {
     return tab.childNodes[0].textContent || "TabNameDefault"
   })

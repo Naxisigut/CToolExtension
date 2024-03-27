@@ -3,6 +3,7 @@ import CtIcon from '~components/CtIcon';
 import { copyText, getHgpParams, getHgpPath } from '~tools';
 import { useState } from 'react';
 import { Badge } from 'flowbite-react';
+import { animated, useTransition } from '@react-spring/web'
 
 /* 列表组件 */
 export default function LocationList({ data }: { data: CollectFrameType[]}){
@@ -18,7 +19,6 @@ export default function LocationList({ data }: { data: CollectFrameType[]}){
               key={index} 
               active={index === activeIdx}
               setActive={() => {
-                console.log('setActive')
                 setActiveIdx(activeIdx === index ? -1 : index)
               }}
             ></LocationItem>
@@ -38,6 +38,11 @@ function LocationItem({ item, active, setActive }: {
   active: Boolean,
 }){
   console.log(0, item, active);
+
+  const isGyl = item.location.pathname === "/gyl/" //新旧页面标识
+  const path = getHgpPath(item.location) // 页面路径
+  const params = getHgpParams(item.location) // 页面参数
+
   /* 复制hash */
   const [ copySuccess, setCopySuccess ] = useState(false)
   function copy(e: React.MouseEvent<HTMLAnchorElement, MouseEvent>, text: string){
@@ -49,9 +54,21 @@ function LocationItem({ item, active, setActive }: {
     },1000)
   }
 
-  const isGyl = item.location.pathname === "/gyl/" //新旧页面标识
-  const path = getHgpPath(item.location) // 页面路径
-  const params = getHgpParams(item.location) // 页面参数
+  /* 过渡动画 */
+  const transitions = useTransition(active, {
+    config: { 
+      duration: 300 // 动画时间
+    }, 
+    from: { // 初始状态 
+      opacity: 0 
+    },
+    enter: { // 入场结束状态
+      opacity: 1 
+    }, 
+    // leave: { // 离场结束状态
+    //   opacity: 0 
+    // },
+  })
 
   return (
     <li className={` rounded-md overflow-hidden p-1 hover:bg-slate-200 ${active ? ' bg-slate-200' : ''} transition-all duration-500`}>
@@ -77,25 +94,29 @@ function LocationItem({ item, active, setActive }: {
 
       {/* 展开部分 */}
       {
-        active && (
-          <>
-            <div className=' my-1 pb-0 h-px bg-slate-400'></div>
-            <section className=' p-1 transition-all duration-500 animate-pulse'>
-              <div className=' text-sm'>
-                <h5 className='inline-block w-[50px]'>PATH: </h5>
-                <p className='inline'>{ path }</p>
-              </div>
+        transitions((style, item) => (
+          // item为useTransition的第一个参数，若是数组则依次传进来
+          item && (
+            <>
+              {/* animated和style需要添加到元素上  */}
+              <animated.div className=' my-1 pb-0 h-px bg-slate-400' style={style}></animated.div>
+              <animated.section className=' p-1' style={style}>
+                <div className=' text-sm'>
+                  <h5 className='inline-block w-[50px]'>PATH: </h5>
+                  <p className='inline'>{ path }</p>
+                </div>
 
-              <div className=' flex flex-wrap mt-1'>
-                {
-                  params.map((param, index) => {
-                    return <ParamTag tag={param} key={index}></ParamTag>
-                  })
-                }
-              </div>
-            </section>
-          </>
-        ) 
+                <div className=' flex flex-wrap mt-1'>
+                  {
+                    params.map((param, index) => {
+                      return <ParamTag tag={param} key={index}></ParamTag>
+                    })
+                  }
+                </div>
+              </animated.section>
+            </>
+          )
+        ))
       }
     </li>
   )
