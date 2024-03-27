@@ -19,7 +19,7 @@ function IndexPopup() {
     fetchListData()
   }, [])
   return (
-    <div style={{ padding: 16 }}>
+    <div style={{ padding: 16 }} className=" w-80">
       <span className=' text-lg font-sans font-semibold leading-10'>列表</span>
       <LocationList data={listData}></LocationList>
     </div>

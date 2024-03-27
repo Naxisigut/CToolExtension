@@ -1,6 +1,16 @@
+export * from "./hgp.js"
+
+/**
+ * 判断当前页面是否是顶级页面（iframe是次级页面）
+ * @returns 
+ */
 export const isTop = () => window === top
 
-// 复制指定文本到剪切板
+/**
+ * 复制指定文本到剪切板
+ * @param str 
+ * @returns
+ */
 export function copyText(str: string){
   const ipt = document.createElement('input')
   ipt.value = str
