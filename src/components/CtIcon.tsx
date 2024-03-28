@@ -1,3 +1,5 @@
+// https://flowbite.com/icons/
+// 样式需要tailwindcss库
 function CtIcon({ icon }){
   let iconEle = null
   switch (icon) {

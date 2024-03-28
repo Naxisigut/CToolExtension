@@ -153,4 +153,136 @@ const handler = () => {
 export default handler
 ```
 
-### porting
+## tailwindcss
+#### 安装依赖
+```
+pnpm i -D tailwindcss postcss autoprefixer
+```
+#### 初始化tailwind
+```
+pnpx tailwindcss init
+```
+#### 配置tailwind
+```js
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  mode: "jit",
+  darkMode: "class",
+  content: ["./**/*.tsx"],
+  plugins: []
+}
+```
+#### 配置postcss
+```js
+// postcss.config.js
+/**
+ * @type {import('postcss').ProcessOptions}
+ */
+module.exports = {
+  plugins: {
+    tailwindcss: {},
+    autoprefixer: {}
+  }
+}
+```
+#### 引入
+```css
+/* style.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
+```tsx
+// popup/index.tsx
+import './style.css';
+```
+
+## flowbite
+#### 安装依赖
+```
+pnpm install flowbite flowbite-react
+```
+#### 配置tailwind
+```js
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  mode: 'jit',
+  darkMode: 'class',
+  content: ['node_modules/flowbite-react/lib/esm/**/*.js'], // 新增
+  theme: {
+    extend: {},
+  },
+  plugins: [
+    require('flowbite/plugin') // 新增
+  ],
+}
+```
+#### 使用
+```tsx
+// any.tsx文件内
+import { Badge } from 'flowbite-react';
+```
+
+## react-spring
+#### 安装
+```
+pnpm i @react-spring/web
+```
+#### 使用：以条件渲染的元素进出场动画为例
+LocationItem是一个列表项组件，要求在点击该项时，展开详细信息，再次点击收起。展开需要有动效。
+点击展开收起的逻辑已经实现，现在看怎样使用react-spring来添加动效。
+这里用到`useTransition`这个api。
+```tsx
+import { animated, useTransition } from '@react-spring/web'
+
+/* 列表项组件 */
+function LocationItem({ item, active, setActive }: { 
+  item: CollectFrameType,
+  setActive: () => void
+  active: Boolean,
+}){
+
+  /* 过渡动画 */
+  const transitions = useTransition(active, {
+    config: { 
+      duration: 300 // 动画时间
+    }, 
+    from: { // 初始状态 
+      opacity: 0 
+    },
+    enter: { // 入场结束状态
+      opacity: 1 
+    }, 
+    // leave: { // 离场结束状态
+    //   opacity: 0 
+    // },
+  })
+
+  return (
+    <li className={` rounded-md overflow-hidden p-1 hover:bg-slate-200 ${active ? ' bg-slate-200' : ''} transition-all duration-500`}>
+      <section className={` flex items-center cursor-pointer`} onClick={ setActive }>
+        // ...常显部分
+      </section>
+
+      {/* 展开部分 */}
+      {
+        transitions((style, item) => (
+          // item为useTransition的第一个参数，若是数组则依次传进来
+          // 这里的item就是active，根据active条件渲染后面的节点。
+          // style则是react-spring根据动效配置生成的css样式。
+          item && (
+            <>
+              {/* animated和style需要添加到元素上  */}
+              <animated.div className=' my-1 pb-0 h-px bg-slate-400' style={style}></animated.div>
+              <animated.section className=' p-1' style={style}>
+                // ...详细信息
+              </animated.section>
+            </>
+          )
+        ))
+      }
+    </li>
+  )
+}
+
+```

@@ -29,7 +29,9 @@ function collectFrames(){
   const tabNames = collectTabNameHgp()
   const resp = locations.map((i, idx) => {
     return {
-      tabName: tabNames[idx] || i.href,
+      // 在非erp网站上没有tab可供获取
+      // 此时默认tabName为location的网址。
+      tabName: tabNames[idx] || i.href, 
       location: i,
     }
   })
