@@ -44,14 +44,14 @@ function LocationItem({ item, active, setActive }: {
   const params = getHgpParams(item.location) // 页面参数
 
   /* 复制hash */
-  const [ copySuccess, setCopySuccess ] = useState(false)
+  const [ copyResIcon, setCopyResIcon ] = useState('copy')
   function copy(e: React.MouseEvent<HTMLAnchorElement, MouseEvent>, text: string){
     e.stopPropagation()
-    copyText(text)
-    setCopySuccess(true)
+    if(text)copyText(text)
+    setCopyResIcon( text ? 'check' : 'close')
     setTimeout(()=>{
-      setCopySuccess(false)
-    },1000)
+      setCopyResIcon('copy')
+    }, 1000)
   }
 
   /* 过渡动画 */
@@ -87,7 +87,7 @@ function LocationItem({ item, active, setActive }: {
         {/* 按钮 */}
         <div className=' ml-2'>
           <a className=' inline-block' title='复制hash' onClick={(e) => copy(e, item.location.hash)}>
-            <CtIcon icon={copySuccess ? "check" : "copy"}></CtIcon>
+            <CtIcon icon={copyResIcon}></CtIcon>
           </a>
         </div>
       </section>
