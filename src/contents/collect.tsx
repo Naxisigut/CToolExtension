@@ -15,11 +15,23 @@ export default function listener(){
   // ret: {data: ${req.body}}
   // useMessage的泛型 前一个参数是接收到的req.body的类型，后一个参数是res.send返回的数据类型
   const ret = useMessage<string | void, CollectFrameType[]>((req, resHandler)=>{
-    const { name } = req // req: 发来的消息本身，另外还有发送端信息
-    if(name !== 'collectFrames')return
+    const { name, body } = req // req: 发来的消息本身，另外还有发送端信息
     console.log('cmd', name);
-    const resp = collectFrames()
-    if(resp)resHandler.send(resp)
+    let resp
+    switch (name) {
+      case 'collectFrames':
+        resp = collectFrames()
+        if(resp)resHandler.send(resp)
+        break;
+      case 'getCookie':
+        const cookies = getCookieObj()
+        if(body)resp = cookies[body]
+        resHandler.send(resp)
+        break;
+    
+      default:
+        break;
+    }
   })
   return null
 }
@@ -62,5 +74,15 @@ const collectTabNameHgp = () => {
     return tab.childNodes[0].textContent || "TabNameDefault"
   })
   return tabNames as string[]
+}
+
+const getCookieObj = () => {
+  const cookieArray = document.cookie.split('; ')
+  const cookieObj = cookieArray.reduce((curr, item) => {
+    const [key, val] = item.split('=')
+    curr[key] = val
+    return curr
+  }, {})
+  return cookieObj
 }
 

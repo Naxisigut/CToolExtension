@@ -9,3 +9,10 @@ export const collectFrames = (): Promise<CollectFrameType[]>=>{
     name: 'collectFrames',
   })
 }
+
+export const getCookie = (cookieName): Promise<any>=>{
+  return sendToContentScript({
+    name: 'getCookie',
+    body: cookieName
+  })
+}
