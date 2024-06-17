@@ -7,14 +7,14 @@ import type { CollectFrameType } from '~types';
 import { useMessage } from '@plasmohq/messaging/hook';
 
 export const config: PlasmoCSConfig = {
-  matches: ["http://127.0.0.1:5502/*", "http://127.0.0.1:5500/*", "*://*.51hgp.com/*"],
+  matches: ["http://127.0.0.1:5502/*", "http://127.0.0.1:5500/*", "*://*.51hgp.com/*", "https://www.tailwindcss.cn/"],
   all_frames: false
 }
 
 export default function listener(){
   // ret: {data: ${req.body}}
   // useMessage的泛型 前一个参数是接收到的req.body的类型，后一个参数是res.send返回的数据类型
-  const ret = useMessage<string | void, CollectFrameType[]>((req, resHandler)=>{
+  const ret = useMessage<string, any>((req, resHandler)=>{
     const { name, body } = req // req: 发来的消息本身，另外还有发送端信息
     console.log('cmd', name);
     let resp
@@ -25,7 +25,11 @@ export default function listener(){
         break;
       case 'getCookie':
         const cookies = getCookieObj()
-        if(body)resp = cookies[body]
+        resp = (body && cookies[body]) || ''
+        resHandler.send(resp)
+        break;
+      case 'SET_COOKIE':
+        setDocumentCookie(body)
         resHandler.send(resp)
         break;
     
@@ -76,6 +80,7 @@ const collectTabNameHgp = () => {
   return tabNames as string[]
 }
 
+/* 获取当前cookie为一个对象 */
 const getCookieObj = () => {
   const cookieArray = document.cookie.split('; ')
   const cookieObj = cookieArray.reduce((curr, item) => {
@@ -84,5 +89,11 @@ const getCookieObj = () => {
     return curr
   }, {})
   return cookieObj
+}
+
+/* 设置cookie */
+const setDocumentCookie = (params) => {
+  const { cookieName, cookieValue } = params
+  document.cookie = `${cookieName}=${cookieValue}`
 }
 
