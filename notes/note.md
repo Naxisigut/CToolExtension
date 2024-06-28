@@ -286,3 +286,56 @@ function LocationItem({ item, active, setActive }: {
 }
 
 ```
+
+## Chrome API
+### Cookie API
+参考链接：https://developer.chrome.google.cn/docs/extensions/reference/api/cookies?authuser=2#type-CookieDetails
+#### prepare
+需要在manifest.json中
+1. `permission` 中添加 `cookies`
+2. `host_permissions` 中添加所访问cookie的域名
+```json
+"host_permissions": [
+  "<all_urls>"
+],
+"permissions": [
+  "cookies"
+]
+```
+#### chrome.cookies.get
+获取单个cookie的详细信息，第一个参数是cookie的匹配条件，第二个是回调。
+```js
+chrome.cookies.get({
+  name: "erp_session_id", 
+  url: "https://internal-dev.51hgp.com/"
+}, (res) => {
+  console.log(res);
+})
+```
+#### chrome.cookies.getAll
+获取`host_permissions`所允许的所有cookie。第一个参数是cookie的匹配条件，第二个是回调。
+```js
+chrome.cookies.getAll({ 
+  domain: ".51hgp.com" 
+}, (cookies) => {
+  console.log(cookies);
+});
+```
+
+### Tab API
+参考链接：https://developer.chrome.google.cn/docs/extensions/reference/api/tabs?authuser=2
+可以在service worker和extension pages里使用，在content中不能使用。
+#### prepare
+大部分Tab API的功能不需要权限。以下三种相关的配置，分别在特殊的场合使用
+1. `permission`中的`tabs`
+2. `Host permissions`
+3. `permission`中的`activeTab`
+#### chrome.tab.query
+获取符合条件的所有tab
+```js
+chrome.tabs.query({
+  url: '*://*.51hgp.com/*'
+}, (tabs) => {
+  console.log(tabs)
+})
+```

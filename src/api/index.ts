@@ -6,13 +6,13 @@ import { sendToBackground, sendToContentScript } from '@plasmohq/messaging';
 
 export const CollectFrames = (): Promise<CollectFrameType[]>=>{
   return sendToContentScript({
-    name: 'collectFrames',
+    name: 'COLLECT_IFRAMES',
   })
 }
 
 export const GetCookie = (cookieName): Promise<any>=>{
   return sendToContentScript({
-    name: 'getCookie',
+    name: 'GET_COOKIE',
     body: cookieName
   })
 }
@@ -24,5 +24,11 @@ export const SetCookie = (params: {
   return sendToContentScript({
     name: 'SET_COOKIE',
     body: params
+  })
+}
+
+export const BgGetCookie = () => {
+  return sendToBackground({
+    name: "GetCookie",
   })
 }

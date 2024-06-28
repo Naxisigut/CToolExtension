@@ -3,11 +3,10 @@
  * collect all the frames info of gongyunlian 
  *  */ 
 import type { PlasmoCSConfig } from 'plasmo';
-import type { CollectFrameType } from '~types';
 import { useMessage } from '@plasmohq/messaging/hook';
 
 export const config: PlasmoCSConfig = {
-  matches: ["http://127.0.0.1:5502/*", "http://127.0.0.1:5500/*", "*://*.51hgp.com/*", "https://www.tailwindcss.cn/"],
+  matches: ["http://127.0.0.1:5502/*", "http://127.0.0.1:5500/*", "*://*.51hgp.com/*", "http://localhost:*/"],
   all_frames: false
 }
 
@@ -19,13 +18,14 @@ export default function listener(){
     console.log('cmd', name);
     let resp
     switch (name) {
-      case 'collectFrames':
+      case 'COLLECT_IFRAMES':
         resp = collectFrames()
         if(resp)resHandler.send(resp)
         break;
-      case 'getCookie':
+      case 'GET_COOKIE':
         const cookies = getCookieObj()
         resp = (body && cookies[body]) || ''
+        console.log('content', resp);
         resHandler.send(resp)
         break;
       case 'SET_COOKIE':
@@ -82,12 +82,14 @@ const collectTabNameHgp = () => {
 
 /* 获取当前cookie为一个对象 */
 const getCookieObj = () => {
+  console.log(0, document.cookie);
   const cookieArray = document.cookie.split('; ')
   const cookieObj = cookieArray.reduce((curr, item) => {
     const [key, val] = item.split('=')
     curr[key] = val
     return curr
   }, {})
+  console.log(111, cookieObj);
   return cookieObj
 }
 

@@ -33,10 +33,11 @@
   },
   "manifest": {
     "host_permissions": [
-      "https://*/*"
+      "<all_urls>"
     ],
     "permissions": [
-      "notifications"
+      "notifications",
+      "cookies"
     ]
   }
 }
