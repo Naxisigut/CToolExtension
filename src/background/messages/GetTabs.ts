@@ -4,7 +4,6 @@ const handler: PlasmoMessaging.MessageHandler = (req, resHandler) => {
   console.log('req', req);
 
   const queryOptions = { url: '*://*.51hgp.com/erp_development/*' };
-    
   chrome.tabs.query(queryOptions, (tabs) => {
     console.log(1111, tabs);
     chrome.cookies.get({

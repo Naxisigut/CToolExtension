@@ -32,3 +32,15 @@ export const BgGetCookie = () => {
     name: "GetCookie",
   })
 }
+
+/**
+ * 获取tab页信息
+ * @param params 
+ * @returns 
+ */
+export const BgGetTabs = (params) => {
+  return sendToBackground({
+    name: "GetTabs",
+    body: params
+  })
+}

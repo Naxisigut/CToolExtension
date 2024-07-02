@@ -3,7 +3,7 @@
  */
 
 import './style.css';
-import { useState, useEffect, lazy, Suspense } from "react"
+import { Suspense } from "react"
 import { MemoryRouter } from 'react-router-dom';
 import Routing from './routes/index';
 
