@@ -19,7 +19,9 @@ function GetIframes() {
   }, [])
 
   return (
-    <LocationList data={listData}></LocationList>
+    <div className="h-full overflow-y-auto">
+      <LocationList data={listData}></LocationList>
+    </div>
   )
 }
 

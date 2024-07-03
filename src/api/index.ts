@@ -17,19 +17,17 @@ export const GetCookie = (cookieName): Promise<any>=>{
   })
 }
 
-export const SetCookie = (params: {
-  cookieName: string, 
-  cookieValue: string
-}): Promise<any>=>{
-  return sendToContentScript({
-    name: 'SET_COOKIE',
+export const BgGetCookie = (params?) => {
+  return sendToBackground({
+    name: "GetCookie",
     body: params
   })
 }
 
-export const BgGetCookie = () => {
+export const BgSetCookie = (params) => {
   return sendToBackground({
-    name: "GetCookie",
+    name: "SetCookie",
+    body: params
   })
 }
 

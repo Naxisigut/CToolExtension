@@ -8,7 +8,7 @@ export default function Layout() {
   const location = useLocation()
   const routing = getFunctionRouting(location.pathname)
   return (
-    <>
+    <div className='flex flex-col h-full'>
       <div className='flex items-center' >
         <button className='hover:scale-110 ease-in-out duration-100' onClick={() => navigation(-1)}>
           <CtIcon icon={'undo'} ></CtIcon> 
@@ -16,9 +16,9 @@ export default function Layout() {
         <h2 className=' flex-1 text-lg ml-4 font-semibold font-sans leading-10'>{ routing && routing.$RouteName }</h2>
       </div>
 
-      <section>
+      <section className='flex-1 h-0'>
         <Outlet></Outlet>
       </section>
-    </>
+    </div>
   )
 };

@@ -22,3 +22,30 @@ export function getHgpParams(location: Location){
   }
   return params
 }
+
+export const erpDomainMap = {
+  'dev' : "internal-dev.51hgp.com",
+  'test': "internal-test.51hgp.com",
+}
+
+
+export type TabInfo = {
+  text: string,
+  abbr: string,
+  domain: string,
+  path: string,
+}
+export const erpTabInfoMap: Record<string, TabInfo> = {
+  dev: {
+    text: '开发环境',
+    abbr: 'dev',
+    domain: "internal-dev.51hgp.com",
+    path: "erp_development"
+  },
+  test: {
+    text: '测试环境',
+    abbr: 'test',
+    domain: "internal-test.51hgp.com",
+    path: "ERPWeb2"
+  },
+}

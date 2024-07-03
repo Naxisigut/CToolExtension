@@ -8,7 +8,7 @@ export default function Home() {
   //   redirect("/functions/getIframes")
   // }, [])
   return (
-    <div className="grid grid-cols-3 gap-4">
+    <div className="grid grid-cols-3 gap-4 h-full">
       {
         functionRoutes.map( route => {
           return route.$HideButton ? null :

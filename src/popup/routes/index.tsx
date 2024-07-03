@@ -25,7 +25,7 @@ export const routes = [
       {
         path: "setCookies",
         element: <SetCookies />,
-        $RouteName: "设置Cookie",
+        $RouteName: "同步Cookie",
         $HideButton: false,
       },
     ]
