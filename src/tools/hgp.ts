@@ -23,12 +23,6 @@ export function getHgpParams(location: Location){
   return params
 }
 
-export const erpDomainMap = {
-  'dev' : "internal-dev.51hgp.com",
-  'test': "internal-test.51hgp.com",
-}
-
-
 export type TabInfo = {
   text: string,
   abbr: string,

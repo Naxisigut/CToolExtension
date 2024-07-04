@@ -17,14 +17,14 @@ export const GetCookie = (cookieName): Promise<any>=>{
   })
 }
 
-export const BgGetCookie = (params?) => {
+export const BgGetCookie = (params?): Promise<string | false> => {
   return sendToBackground({
     name: "GetCookie",
     body: params
   })
 }
 
-export const BgSetCookie = (params) => {
+export const BgSetCookie = (params): Promise<boolean> => {
   return sendToBackground({
     name: "SetCookie",
     body: params
